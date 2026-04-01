@@ -1727,6 +1727,9 @@ async function sendAndConfirmTx(txSerialized, lastValidBlockHeight, txHash, flee
 				cLog(1,`${FleetTimeStamp(fleetName)} <${opName}> Completed 🏁 ${secondsTaken}s`);
 
 				await alterStats('SOL Fees',undefined,txResult.meta.fee*0.000000001,'SOL',7); // undefined name => only totals tracked //statsadd
+await customInfluxTxnFeeHook(fleet, opName, txResult); // CUSTOM INFLUX FEE EXPORT
+
+				
 				let statGroup = ((confirmation && confirmation.value && confirmation.value.err && confirmation.value.err.InstructionError) || (txResult && txResult.meta && txResult.meta.err && txResult.meta.err.InstructionError)) ? 'Txs IxErrors' : 'Txs Confirmed'; //statsadd
 				await alterStats(statGroup,opName,fullMsTaken/1000,'Seconds',1); //statsadd
 				await alterFees(fullMsTaken/1000, opName); //autofee
@@ -8618,4 +8621,7 @@ async function sendAndConfirmTx(txSerialized, lastValidBlockHeight, txHash, flee
 	autoSpanRef ? autoSpanRef.innerHTML = 'Start' : null;
 	cLog(0,'init complete');
 	cLog(0,'Fleets:', userFleets);
+
+
+	
 })();
